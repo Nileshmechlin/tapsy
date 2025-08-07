@@ -5,10 +5,23 @@ import { verifyFirebaseToken } from '../utils/firebase';
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { userType } = req.body;
+
+    if (!userType) {
+      return res.status(400).json({ error: 'userType is required' });
+    }
+
+    if (userType !== 'INDIVIDUAL' && userType !== 'BUSINESS') {
+        return res.status(400).json({ error: 'Invalid userType' });
+    }
+
     const user = await userService.createUser(userType);
     res.status(201).json(user);
-  } catch {
-    res.status(500).json({ error: 'User creation failed' });
+  } catch (error) {
+    console.error('User creation error:', error);
+    res.status(500).json({
+      error: 'User creation failed',
+      details: process.env.NODE_ENV === 'development' ? error : undefined,
+    });
   }
 };
 
