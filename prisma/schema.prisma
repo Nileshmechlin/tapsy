@@ -19,36 +19,32 @@ model User {
   mobileNumber      String?  @unique
   userType          UserType?
   UserName          String?
-  otp               String?
-  otpExpires        DateTime?
   otpVerified       Boolean  @default(false)
   tags              String[] @default([])
   lastCompletedStep Int      @default(0)
   status            UserStatus @default(ONBOARDING)
 
-  refreshToken      String?
-  lastLogin         DateTime?
-  deviceId          String?
+  refreshToken      String?     
+  lastLogin         DateTime?   
+  deviceId          String?    
 
-  businessDetails   BusinessDetails?
-  businessDetailsId String? @unique
+  businessDetails   BusinessDetails? @relation("UserBusinessDetails")
+  businessDetailsId String?
 
   locationType      LocationType?
   locationLat       Float?
   locationLng       Float?
   locationAddress   String?
 
-  userPersonalizations UserPersonalization[] @relation("UserSelections")
-
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  selectedPersonalizations UserPersonalization[] @relation("UserSelections")
 }
-
-
 
 model BusinessDetails {
   id          String   @id @default(uuid())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation("UserBusinessDetails", fields: [userId], references: [id])
   userId      String   @unique
 
   companyName String
@@ -59,8 +55,8 @@ model BusinessDetails {
   state       String?
   country     String?
   zipcode     String?
-  category    String?
-  description String?
+  category    String?    
+  description String?    
   email       String?    @unique
   mobile      String?    @unique
   logoUrl     String?
@@ -74,7 +70,7 @@ model UserPersonalization {
   id         String   @id @default(uuid())
   name       String
   slug       String   @unique
-  screenType String
+  screenType String   
   sortOrder  Int
   status     Boolean  @default(true)
 
@@ -94,9 +90,9 @@ enum UserStatus {
   ONBOARDING
   VERIFIED
   BLOCKED
- }
-
- enum LocationType {
+}
+enum LocationType {
   HOME
   OFFICE
- }
+  OTHER
+}
