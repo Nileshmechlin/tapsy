@@ -5,6 +5,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api",mainRouter);
 app.get("/", (_req, res) => {
   res.send("Tapsy Backend is running!");

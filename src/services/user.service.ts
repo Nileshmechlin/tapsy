@@ -1,10 +1,11 @@
 import prisma from '../config/db';
 import jwt from 'jsonwebtoken';
+import { UserType } from '../../generated/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'your-refresh-secret-key';
 
-export const createUser = async (userType: string) => {
+export const createUser = async (userType: UserType) => {
   const user = await prisma.user.create({
     data: { userType, lastCompletedStep: 1 },
   });

@@ -20,6 +20,8 @@ model User {
   userType          UserType?
   UserName          String?
   otpVerified       Boolean  @default(false)
+    otp               String?     // OTP value
+  otpExpires        DateTime?   // OTP expiry
   tags              String[] @default([])
   lastCompletedStep Int      @default(0)
   status            UserStatus @default(ONBOARDING)
