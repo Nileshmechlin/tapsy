@@ -1,6 +1,4 @@
 import prisma from '../config/db';
-import { getNextStep } from '../utils/validateSteps';
-import { sendOtpEmail } from '../utils/mailer';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -14,19 +12,10 @@ export const createUser = async (userType: string) => {
 };
 
 export const updateUser = async (id: string, updates: any) => {
-  const updated = await prisma.user.update({
+  return prisma.user.update({
     where: { id },
     data: updates,
     include: { businessDetails: true },
-  });
-
-  const nextStep = getNextStep(updated);
-  return prisma.user.update({
-    where: { id },
-    data: {
-      lastCompletedStep: nextStep,
-      status: nextStep === 7 ? 'VERIFIED' : 'ONBOARDING',
-    },
   });
 };
 
