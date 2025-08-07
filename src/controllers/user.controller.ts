@@ -50,3 +50,30 @@ export const getUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'User fetch failed' });
   }
 };
+
+
+export const verifyEmailOtp = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { otp } = req.body;
+    const updated = await userService.verifyEmailOtp(id, otp);
+    res.json(updated);
+  } catch (error) {
+    console.error('Verify OTP error:', error);
+    res.status(400).json({ error: (error as Error).message });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { loginId, deviceId } = req.body;
+    if (!loginId || !deviceId) {
+      return res.status(400).json({ error: 'loginId and deviceId are required' });
+    }
+    const result = await userService.login(loginId, deviceId);
+    res.json(result);
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(401).json({ error: (error as Error).message });
+  }
+};
