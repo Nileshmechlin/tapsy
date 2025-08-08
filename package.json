@@ -1,7 +1,6 @@
 {
   "name": "tapsy-backend",
   "version": "1.0.0",
-  
   "description": "Backend server for the Tapsy project, built with Node.js, Express.js, TypeScript, PostgreSQL, and Prisma ORM.",
   "main": "server.js",
   "scripts": {
@@ -58,8 +57,10 @@
     "nodemailer": "^7.0.5"
   },
   "lint-staged": {
-    "src/**/*": {
-      "{ts,js}": "[\"eslint --fix\", \"prettier --write\"]"
-    }
+    "src/**/*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
+
 }
