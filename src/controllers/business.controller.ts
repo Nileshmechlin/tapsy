@@ -1,14 +1,13 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as businessService from '../services/business.service';
 
-export const updateBusinessDetails = async (req: Request, res: Response) => {
+export const updateBusinessDetails = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.params;
     const details = req.body;
     const updated = await businessService.updateBusinessDetails(userId, details);
-    res.json(updated);
+    res.json({ status: 'success', data: updated });
   } catch (error) {
-    console.error('Update business details error:', error);
-    res.status(500).json({ error: 'Business details update failed' });
+    next(error);
   }
 };

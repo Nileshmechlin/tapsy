@@ -1,51 +1,51 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as userPersonalizationService from '../services/userPersonalization.service';
 
-export const createUserPersonalization = async (req: Request, res: Response) => {
+export const createUserPersonalization = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userPersonalization = await userPersonalizationService.createUserPersonalization(req.body);
-        res.status(201).json(userPersonalization);
+        res.status(201).json({ status: 'success', data: userPersonalization });
     } catch (error) {
-        res.status(500).json({ error: 'User personalization creation failed' });
+        next(error);
     }
 };
 
-export const getUserPersonalizations = async (req: Request, res: Response) => {
+export const getUserPersonalizations = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userPersonalizations = await userPersonalizationService.getAllUserPersonalizations();
-        res.json(userPersonalizations);
+        res.json({ status: 'success', data: userPersonalizations });
     } catch (error) {
-        res.status(500).json({ error: 'User personalizations fetch failed' });
+        next(error);
     }
 };
 
-export const getUserPersonalization = async (req: Request, res: Response) => {
+export const getUserPersonalization = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const userPersonalization = await userPersonalizationService.getUserPersonalizationById(id);
-        res.json(userPersonalization);
+        res.json({ status: 'success', data: userPersonalization });
     } catch (error) {
-        res.status(500).json({ error: 'User personalization fetch failed' });
+        next(error);
     }
 };
 
-export const updateUserPersonalization = async (req: Request, res: Response) => {
+export const updateUserPersonalization = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const updates = req.body;
         const updatedUserPersonalization = await userPersonalizationService.updateUserPersonalization(id, updates);
-        res.json(updatedUserPersonalization);
+        res.json({ status: 'success', data: updatedUserPersonalization });
     } catch (error) {
-        res.status(500).json({ error: 'User personalization update failed' });
+        next(error);
     }
 };
 
-export const deleteUserPersonalization = async (req: Request, res: Response) => {
+export const deleteUserPersonalization = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         await userPersonalizationService.deleteUserPersonalization(id);
         res.status(204).send();
     } catch (error) {
-        res.status(500).json({ error: 'User personalization deletion failed' });
+        next(error);
     }
 };

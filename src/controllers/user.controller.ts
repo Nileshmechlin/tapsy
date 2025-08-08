@@ -18,7 +18,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     const user = await userService.createUser(userType);
     res.status(201).json({ status: 'success', data: user });
   } catch (error) {
-    next(new AppError('User creation failed', 500, error));
+    next(error);
   }
 };
 
@@ -44,7 +44,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     const updated = await userService.updateUser(id, updates);
     res.json({ status: 'success', data: updated });
   } catch (error) {
-    next(new AppError('User update failed', 500, error));
+    next(error);
   }
 };
 
@@ -54,7 +54,7 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
     const user = await userService.getUserById(id);
     res.json({ status: 'success', data: user });
   } catch (error) {
-    next(new AppError('User fetch failed', 500, error));
+    next(error);
   }
 };
 
@@ -65,7 +65,7 @@ export const verifyEmailOtp = async (req: Request, res: Response, next: NextFunc
     const updated = await userService.verifyEmailOtp(id, otp);
     res.json({ status: 'success', data: updated });
   } catch (error) {
-    next(new AppError((error as Error).message, 400));
+    next(error);
   }
 };
 
@@ -78,6 +78,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const result = await userService.login(loginId, deviceId);
     res.json({ status: 'success', data: result });
   } catch (error) {
-    next(new AppError((error as Error).message, 401));
+    next(error);
   }
 };

@@ -1,16 +1,48 @@
-import {Router} from 'express';
-import * as controller from '../controllers/user.controller';
-import { authenticate } from '../middlewares/auth.middleware';
-
-const userRouter = Router();
-
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controller = __importStar(require("../controllers/user.controller"));
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const userRouter = (0, express_1.Router)();
 /**
  * @swagger
  * tags:
  *   name: Users
  *   description: User management
  */
-
 /**
  * @swagger
  * /users/register:
@@ -36,7 +68,6 @@ const userRouter = Router();
  *         description: Bad request
  */
 userRouter.post('/register', controller.registerUser);
-
 /**
  * @swagger
  * /users/{id}:
@@ -66,8 +97,7 @@ userRouter.post('/register', controller.registerUser);
  *       401:
  *         description: Unauthorized
  */
-userRouter.patch('/:id', authenticate, controller.updateUser);
-
+userRouter.patch('/:id', auth_middleware_1.authenticate, controller.updateUser);
 /**
  * @swagger
  * /users/{id}:
@@ -91,8 +121,7 @@ userRouter.patch('/:id', authenticate, controller.updateUser);
  *       401:
  *         description: Unauthorized
  */
-userRouter.get('/:id', authenticate, controller.getUser);
-
+userRouter.get('/:id', auth_middleware_1.authenticate, controller.getUser);
 /**
  * @swagger
  * /users/{id}/verify-otp:
@@ -124,7 +153,6 @@ userRouter.get('/:id', authenticate, controller.getUser);
  *         description: Invalid OTP
  */
 userRouter.post('/:id/verify-otp', controller.verifyEmailOtp);
-
 /**
  * @swagger
  * /users/login:
@@ -152,5 +180,4 @@ userRouter.post('/:id/verify-otp', controller.verifyEmailOtp);
  *         description: Unauthorized
  */
 userRouter.post('/login', controller.login);
-
-export default userRouter;
+exports.default = userRouter;

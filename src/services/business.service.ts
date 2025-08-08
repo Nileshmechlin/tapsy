@@ -1,11 +1,12 @@
 import prisma from '../config/db';
 import { sendOtpEmail } from '../utils/mailer';
+import AppError from '../utils/AppError';
 
 export const updateBusinessDetails = async (userId: string, details: any) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
-    throw new Error('User not found');
+    throw new AppError('User not found', 404);
   }
 
   let businessDetails;
@@ -33,7 +34,11 @@ export const updateBusinessDetails = async (userId: string, details: any) => {
       data: { otp, otpExpires },
     });
 
-    await sendOtpEmail(details.email, otp);
+    try {
+      await sendOtpEmail(details.email, otp);
+    } catch (error) {
+      throw new AppError('Failed to send OTP email', 500, { originalError: error });
+    }
   }
 
   return prisma.user.findUnique({
