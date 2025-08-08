@@ -1,11 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+
+import type { User } from '../../generated/prisma';
 import prisma from '../config/db';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 interface AuthRequest extends Request {
-  user?: any;
+  user?: User;
 }
 
 export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -25,7 +27,7 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
 
     req.user = user;
     next();
-  } catch (error) {
+  } catch {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
