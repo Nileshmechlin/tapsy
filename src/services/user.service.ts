@@ -1,6 +1,7 @@
-import prisma from '../config/db';
 import jwt from 'jsonwebtoken';
+
 import { UserType } from '../../generated/prisma';
+import prisma from '../config/db';
 import AppError from '../utils/AppError';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -13,7 +14,7 @@ export const createUser = async (userType: UserType) => {
   return user;
 };
 
-export const updateUser = async (id: string, updates: any) => {
+export const updateUser = async (id: string, updates: Record<string, unknown>) => {
   try {
     return await prisma.user.update({
       where: { id },
@@ -39,7 +40,9 @@ export const login = async (loginId: string, deviceId: string) => {
   if (user.deviceId && user.deviceId !== deviceId) {
     // In a real app, you might want to notify the user
     // that a new device has logged in.
-    console.log(`User ${user.id} logged in from a new device. Old device ID: ${user.deviceId}, New device ID: ${deviceId}`);
+    console.log(
+      `User ${user.id} logged in from a new device. Old device ID: ${user.deviceId}, New device ID: ${deviceId}`,
+    );
   }
 
   const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });

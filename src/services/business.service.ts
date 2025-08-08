@@ -1,8 +1,11 @@
+import type { Prisma } from '../../generated/prisma';
 import prisma from '../config/db';
-import { sendOtpEmail } from '../utils/mailer';
 import AppError from '../utils/AppError';
+import { sendOtpEmail } from '../utils/mailer';
 
-export const updateBusinessDetails = async (userId: string, details: any) => {
+type BusinessDetailsUpsert = Prisma.BusinessDetailsCreateInput & { email?: string | null };
+
+export const updateBusinessDetails = async (userId: string, details: Record<string, unknown>) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
@@ -13,11 +16,14 @@ export const updateBusinessDetails = async (userId: string, details: any) => {
   if (user.businessDetailsId) {
     businessDetails = await prisma.businessDetails.update({
       where: { id: user.businessDetailsId },
-      data: details,
+      data: details as Prisma.BusinessDetailsUpdateInput,
     });
   } else {
     businessDetails = await prisma.businessDetails.create({
-      data: { ...details, userId },
+      data: {
+        ...(details as Prisma.BusinessDetailsCreateInput),
+        user: { connect: { id: userId } },
+      },
     });
     await prisma.user.update({
       where: { id: userId },
@@ -25,7 +31,8 @@ export const updateBusinessDetails = async (userId: string, details: any) => {
     });
   }
 
-  if (details.email) {
+  const email = (details as BusinessDetailsUpsert).email ?? undefined;
+  if (email && typeof email === 'string' && email.length > 0) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
 
@@ -35,7 +42,7 @@ export const updateBusinessDetails = async (userId: string, details: any) => {
     });
 
     try {
-      await sendOtpEmail(details.email, otp);
+      await sendOtpEmail(email, otp);
     } catch (error) {
       throw new AppError('Failed to send OTP email', 500, { originalError: error });
     }

@@ -1,4 +1,5 @@
-import {Router} from 'express';
+import { Router } from 'express';
+
 import * as controller from '../controllers/user.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 
@@ -7,8 +8,8 @@ const userRouter = Router();
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: User management
+ *   - name: Users
+ *     description: User management
  */
 
 /**

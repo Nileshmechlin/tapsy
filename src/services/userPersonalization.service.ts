@@ -36,7 +36,7 @@ export const getUserPersonalizationById = async (id: string) => {
   return personalization;
 };
 
-export const updateUserPersonalization = async (id: string, updates: any) => {
+export const updateUserPersonalization = async (id: string, updates: Record<string, unknown>) => {
   try {
     return await prisma.userPersonalization.update({
       where: { id },

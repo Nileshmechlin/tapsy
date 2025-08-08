@@ -47,6 +47,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.verifyEmailOtp = exports.getUser = exports.updateUser = exports.registerUser = void 0;
 const userService = __importStar(require("../services/user.service"));
+const firebase_1 = require("../utils/firebase");
 const AppError_1 = __importDefault(require("../utils/AppError"));
 const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -69,14 +70,14 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     try {
         const { id } = req.params;
         const updates = req.body;
-        // if (updates.idToken) {
-        //   const decoded = await verifyFirebaseToken(updates.idToken);
-        //   if (!decoded.phone_number) {
-        //     return next(new AppError('Invalid Firebase token', 400));
-        //   }
-        //   updates.mobileNumber = decoded.phone_number;
-        //   updates.otpVerified = true;
-        // }
+        if (updates.idToken) {
+            const decoded = yield (0, firebase_1.verifyFirebaseToken)(updates.idToken);
+            if (!decoded.phone_number) {
+                return next(new AppError_1.default('Invalid Firebase token', 400));
+            }
+            updates.mobileNumber = decoded.phone_number;
+            updates.otpVerified = true;
+        }
         delete updates.idToken;
         delete updates.status;
         delete updates.userType;

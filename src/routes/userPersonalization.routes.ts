@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import * as userPersonalizationController from '../controllers/userPersonalization.controller';
 
 const router = Router();
@@ -6,8 +7,8 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   name: UserPersonalization
- *   description: User personalization management
+ *   - name: UserPersonalization
+ *     description: User personalization management
  */
 
 /**

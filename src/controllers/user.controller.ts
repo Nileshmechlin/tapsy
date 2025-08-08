@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+
 import * as userService from '../services/user.service';
-import { verifyFirebaseToken } from '../utils/firebase';
 import AppError from '../utils/AppError';
+import { verifyFirebaseToken } from '../utils/firebase';
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,9 +17,9 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     }
 
     const user = await userService.createUser(userType);
-    res.status(201).json({ status: 'success', data: user });
+    res.created(user);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -42,9 +43,9 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     delete updates.userType;
 
     const updated = await userService.updateUser(id, updates);
-    res.json({ status: 'success', data: updated });
+    res.success(updated);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -52,9 +53,9 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
   try {
     const { id } = req.params;
     const user = await userService.getUserById(id);
-    res.json({ status: 'success', data: user });
+    res.success(user);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -63,9 +64,9 @@ export const verifyEmailOtp = async (req: Request, res: Response, next: NextFunc
     const { id } = req.params;
     const { otp } = req.body;
     const updated = await userService.verifyEmailOtp(id, otp);
-    res.json({ status: 'success', data: updated });
+    res.success(updated);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -76,8 +77,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       return next(new AppError('loginId and deviceId are required', 400));
     }
     const result = await userService.login(loginId, deviceId);
-    res.json({ status: 'success', data: result });
+    res.success(result);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };

@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
+
 import AppError from '../utils/AppError';
 
 const handleAppError = (err: AppError, res: Response) => {
@@ -19,7 +20,7 @@ const handleGenericError = (err: Error, res: Response) => {
   });
 };
 
-const globalErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
+const globalErrorHandler = (err: unknown, _req: Request, res: Response) => {
   if (err instanceof AppError) {
     return handleAppError(err, res);
   }
